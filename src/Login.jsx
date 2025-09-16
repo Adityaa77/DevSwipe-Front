@@ -2,19 +2,23 @@ import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
 
-const HandleLogin =async ()=>{
-  try {const res= await axios.post("http://localhost:5173/login",{
-    emailId,
-    password,
-  })
-}catch(err){
-    res.status(400).send("Error")
-  }
-};
-
 const Login = () => {
   const [emailId,setEmailId]=useState("");
   const [password,setPassword]=useState("");
+
+  const HandleLogin = async () => {
+  try {
+    const res = await axios.post("http://localhost:5173/login", {
+      emailId,
+      password,
+    });
+    console.log("Login successful:", res.data);
+    // You can redirect or show a success message here
+  } catch (err) {
+    console.error("Login failed:", err.response?.data || err.message);
+    // Optionally show an error message to the user
+  }
+};
 
   return (
   <div className='flex justify-center my-10'>
@@ -39,9 +43,11 @@ const Login = () => {
             <input
           type="email"
   required
+  value={emailId}
   placeholder="Email"
   pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$"
   title="Enter a valid email address"
+  onChange={(e)=>setEmailId(e.target.value)}
 />
             </label>
             <p className="validator-hint">
@@ -69,8 +75,8 @@ const Login = () => {
     required
     value={password}
     placeholder="Password"
-    minlength="8"
-    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+    minLength={8}
+    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
     onChange={(e)=>setPassword(e.target.value)}
   /> 
@@ -81,7 +87,8 @@ const Login = () => {
 </p>
     </div>
     <div className="card-actions justify-end">
-      <button className="btn btn-primary">Login</button>
+      <button className="btn btn-primary"onClick={HandleLogin}>
+        Login</button>
     </div>
   </div>
 </div>
