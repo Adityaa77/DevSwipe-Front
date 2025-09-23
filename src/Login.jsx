@@ -8,10 +8,11 @@ const Login = () => {
 
   const HandleLogin = async () => {
   try {
-    const res = await axios.post("http://localhost:5173/login", {
-      emailId,
-      password,
+    const res = await axios.post("http://localhost:3000/login", {
+    Emailid: emailId,
+    Password: password,
     });
+
     console.log("Login successful:", res.data);
     // You can redirect or show a success message here
   } catch (err) {
