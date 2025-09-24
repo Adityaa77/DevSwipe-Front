@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
+import { addUser } from './utls/userslice';
 
 const Login = () => {
   const [emailId,setEmailId]=useState("");
@@ -14,8 +15,8 @@ const Login = () => {
     },
     {withCredentials:true}
   );
-
     console.log("Login successful:", res.data);
+    dispatch(addUser(res.data));
     // You can redirect or show a success message here
   } catch (err) {
     console.error("Login failed:", err.response?.data || err.message);
