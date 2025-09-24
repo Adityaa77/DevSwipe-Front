@@ -11,7 +11,9 @@ const Login = () => {
     const res = await axios.post("http://localhost:3000/login", {
     Emailid: emailId,
     Password: password,
-    });
+    },
+    {withCredentials:true}
+  );
 
     console.log("Login successful:", res.data);
     // You can redirect or show a success message here
@@ -71,16 +73,16 @@ const Login = () => {
       <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
     </g>
   </svg>
-  <input
-    type="password"
-    required
-    value={password}
-    placeholder="Password"
-    minLength={8}
-    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-    onChange={(e)=>setPassword(e.target.value)}
-  /> 
+ <input
+  type="password"
+  required
+  value={password}
+  placeholder="Password"
+  minLength={8}
+  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+  title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+  onChange={(e) => setPassword(e.target.value)}
+/>
 </label>
 <p className="validator-hint hidden">
   Must be more than 8 characters, including
