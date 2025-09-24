@@ -2,12 +2,16 @@ import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
 import { addUser } from './utls/userslice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [emailId,setEmailId]=useState("");
   const [password,setPassword]=useState("");
-
+  const dispatch = useDispatch();
+  const navigate=useNavigate();
   const HandleLogin = async () => {
+    
   try {
     const res = await axios.post("http://localhost:3000/login", {
     Emailid: emailId,
@@ -16,7 +20,9 @@ const Login = () => {
     {withCredentials:true}
   );
     console.log("Login successful:", res.data);
+    
     dispatch(addUser(res.data));
+    return navigate("/");
     // You can redirect or show a success message here
   } catch (err) {
     console.error("Login failed:", err.response?.data || err.message);
