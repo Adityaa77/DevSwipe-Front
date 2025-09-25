@@ -9,6 +9,7 @@ import { BASE_URL } from '../utls/constants';
 const Login = () => {
   const [emailId,setEmailId]=useState("");
   const [password,setPassword]=useState("");
+  const [Error,setError]=useState("");
   const dispatch = useDispatch();
   const navigate=useNavigate();
 
@@ -26,6 +27,7 @@ const Login = () => {
     return navigate("/");
     // You can redirect or show a success message here
   } catch (err) {
+    setError(err?.response?.data ||"Something Went Wrong")
     console.error("Login failed:", err.response?.data || err.message);
     // Optionally show an error message to the user
   }
