@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {BASE_URL} from "../utls/constants";
 import { useEffect } from "react";
 import axios from "axios";
+import { addUser } from "../utls/userslice";
 
 const Body = () => {
   const dispatch=useDispatch();
@@ -19,8 +20,8 @@ const Body = () => {
         withCredentials: true,
       });
       dispatch(addUser(res.data));
-    }catch(arr){
-      if(err.staus==401){
+    }catch(err){
+      if(err.status==401){
       navigate('/login');
       }
       console.error(err);

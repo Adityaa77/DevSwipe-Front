@@ -15,11 +15,11 @@ function App() {
    <Provider store={appStore}>{/*This is for the redux store */}
     <BrowserRouter basename='/'>
     <Routes>
-      <Route path="/" element={<Body/>}>
-      <Route path='/' element={<Feed/>}/>
+    <Route path="/" element={<Body/>}>
+      <Route path="/" element={<Feed/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/profile' element={<Profile/>}/>
-      </Route>  
+    </Route>  
     </Routes>
     </BrowserRouter>
    </Provider>
