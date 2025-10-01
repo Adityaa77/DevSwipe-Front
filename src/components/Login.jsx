@@ -1,112 +1,140 @@
-import axios from 'axios';
-import React from 'react'
-import { useState } from 'react';
-import { addUser } from '../utls/userslice';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from '../utls/constants';
+import { useState } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utls/userslice";   // 🔹 from your code
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utls/constants";  // 🔹 from your code
 
 const Login = () => {
-  const [emailId,setEmailId]=useState("");
-  const [password,setPassword]=useState("");
-  const [Error,setError]=useState("");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isLoginForm, setIsLoginForm] = useState(true);
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-  const HandleLogin = async () => {
-  try {
-    const res = await axios.post(BASE_URL+"/login", {
-    Emailid: emailId,
-    Password: password,
-    },
-    {withCredentials:true}
-  );
-    console.log("Login successful:", res.data);
-    
-    dispatch(addUser(res.data));
-    return navigate("/");
-    // You can redirect or show a success message here
-  } catch (err) {
-    setError(err?.response?.data ||"Something Went Wrong")
-    console.error("Login failed:", err.response?.data || err.message);
-    // Optionally show an error message to the user
-  }
-};
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/login",
+        {
+          Emailid: emailId,   // 🔹 keep same keys as your API expects
+          Password: password,
+        },
+        { withCredentials: true }
+      );
+      dispatch(addUser(res.data));
+      return navigate("/");
+    } catch (err) {
+      setError(err?.response?.data || "Something went wrong");
+    }
+  };
+
+  const handleSignUp = async () => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/signup",
+        { firstName, lastName, emailId, password },
+        { withCredentials: true }
+      );
+      dispatch(addUser(res.data.data));
+      return navigate("/profile");
+    } catch (err) {
+      setError(err?.response?.data || "Something went wrong");
+    }
+  };
 
   return (
-  <div className='flex justify-center my-25'>
-  <div className="card bg-base-300 w-96 shadow-sm">
-  <div className="card-body">
-    <h2 className="card-title justify-center ">Login</h2>
-    <div>
-    {/* email */}
-            <label className="input validator">
-              <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2.5"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <rect x="2" y="6" width="20" height="12" rx="2" />
-                  <path d="M22 6l-10 7L2 6" />
-                </g>
-              </svg>
-            <input
-          type="email"
-  required
-  value={emailId}
-  placeholder="Email"
-  pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$"
-  title="Enter a valid email address"
-  onChange={(e)=>setEmailId(e.target.value)}
-/>
+    <div className="flex justify-center my-10">
+      <div className="card bg-base-300 w-96 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title justify-center">
+            {isLoginForm ? "Login" : "Sign Up"}
+          </h2>
+          <div>
+            {!isLoginForm && (
+              <>
+                <label className="form-control w-full max-w-xs my-2">
+                  <div className="label">
+                    <span className="label-text">First Name</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={firstName}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </label>
+                <label className="form-control w-full max-w-xs my-2">
+                  <div className="label">
+                    <span className="label-text">Last Name</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={lastName}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </label>
+              </>
+            )}
+            {/* Email */}
+            <label className="form-control w-full max-w-xs my-2">
+              <div className="label">
+                <span className="label-text">Email ID:</span>
+              </div>
+              <input
+                type="email"
+                required
+                value={emailId}
+                placeholder="Email"
+                className="input input-bordered w-full max-w-xs"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$"
+                title="Enter a valid email address"
+                onChange={(e) => setEmailId(e.target.value)}
+              />
             </label>
-            <p className="validator-hint">
-              Enter a valid email address
-            </p>
+            {/* Password */}
+            <label className="form-control w-full max-w-xs my-2">
+              <div className="label">
+                <span className="label-text">Password</span>
+              </div>
+              <input
+                type="password"
+                required
+                value={password}
+                placeholder="Password"
+                className="input input-bordered w-full max-w-xs"
+                minLength={8}
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+          </div>
+          <p className="text-red-500">{error}</p>
+          <div className="card-actions justify-center m-2">
+            <button
+              className="btn btn-primary"
+              onClick={isLoginForm ? handleLogin : handleSignUp}
+            >
+              {isLoginForm ? "Login" : "Sign Up"}
+            </button>
+          </div>
 
-{/* password */}
-<label className="input validator">
-  <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <g
-      strokeLinejoin="round"
-      strokeLinecap="round"
-      strokeWidth="2.5"
-      fill="none"
-      stroke="currentColor"
-    >
-      <path
-        d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
-      ></path>
-      <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
-    </g>
-  </svg>
- <input
-  type="password"
-  required
-  value={password}
-  placeholder="Password"
-  minLength={8}
-  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
-  title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-  onChange={(e) => setPassword(e.target.value)}
-/>
-</label>
-<p className="validator-hint hidden">
-  Must be more than 8 characters, including
-  <br />At least one number <br />At least one lowercase letter <br />At least one uppercase letter
-</p>
+          <p
+            className="m-auto cursor-pointer py-2"
+            onClick={() => setIsLoginForm((value) => !value)}
+          >
+            {isLoginForm
+              ? "New User? Signup Here"
+              : "Existing User? Login Here"}
+          </p>
+        </div>
+      </div>
     </div>
-    <div className="card-actions justify-end">
-      <button className="btn btn-primary"onClick={HandleLogin}>
-        Login</button>
-    </div>
-  </div>
-</div>
-    </div>
-  )
-}
-
-export default Login
+  );
+};
+export default Login;
