@@ -1,9 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { addUser } from "../utls/userslice";   // 🔹 from your code
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../utls/constants";  // 🔹 from your code
+import { addUser } from "../utls/userslice";
+import { BASE_URL } from "../utls/constants";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("");
@@ -16,33 +16,69 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    setError("");
+    if (!emailId || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
     try {
-      const res = await axios.post(
-        BASE_URL + "/login",
-        {
-          Emailid: emailId,   // 🔹 keep same keys as your API expects
-          Password: password,
-        },
-        { withCredentials: true }
-      );
-      dispatch(addUser(res.data));
-      return navigate("/");
+      // Use backend-friendly keys (Emailid, Password)
+      const payload = { Emailid: emailId, Password: password };
+      console.log("Login payload:", payload);
+
+      const res = await axios.post(BASE_URL + "/login", payload, {
+        withCredentials: true,
+      });
+
+      const user = res?.data?.data ?? res?.data;
+      console.log("Login success:", res?.data);
+      if (user) dispatch(addUser(user));
+      navigate("/");
     } catch (err) {
-      setError(err?.response?.data || "Something went wrong");
+      console.error("Login full error:", err);
+      console.error("Login response data:", err?.response?.data);
+      const serverMsg =
+        (err?.response?.data && (err.response.data.message ?? err.response.data)) ||
+        err?.message ||
+        "Something went wrong";
+      setError(String(serverMsg));
     }
   };
 
   const handleSignUp = async () => {
+    setError("");
+    if (!firstName || !lastName || !emailId || !password) {
+      setError("All signup fields are required.");
+      return;
+    }
+
     try {
-      const res = await axios.post(
-        BASE_URL + "/signup",
-        { firstName, lastName, emailId, password },
-        { withCredentials: true }
-      );
-      dispatch(addUser(res.data.data));
-      return navigate("/profile");
+      // Use backend-friendly keys (Name, LastName, Emailid, Password)
+      const payload = {
+        Name: firstName,
+        LastName: lastName,
+        Emailid: emailId,
+        Password: password,
+      };
+      console.log("Signup payload:", payload);
+
+      const res = await axios.post(BASE_URL + "/signup", payload, {
+        withCredentials: true,
+      });
+
+      const user = res?.data?.data ?? res?.data;
+      console.log("Signup success:", res?.data);
+      if (user) dispatch(addUser(user));
+      navigate("/profile");
     } catch (err) {
-      setError(err?.response?.data || "Something went wrong");
+      console.error("Signup full error:", err);
+      console.error("Signup response data:", err?.response?.data);
+      const serverMsg =
+        (err?.response?.data && (err.response.data.message ?? err.response.data)) ||
+        err?.message ||
+        "Something went wrong";
+      setError(String(serverMsg));
     }
   };
 
@@ -80,41 +116,34 @@ const Login = () => {
                 </label>
               </>
             )}
-            {/* Email */}
             <label className="form-control w-full max-w-xs my-2">
               <div className="label">
                 <span className="label-text">Email ID:</span>
               </div>
               <input
                 type="email"
-                required
                 value={emailId}
-                placeholder="Email"
                 className="input input-bordered w-full max-w-xs"
-                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$"
-                title="Enter a valid email address"
                 onChange={(e) => setEmailId(e.target.value)}
+                placeholder="you@example.com"
               />
             </label>
-            {/* Password */}
             <label className="form-control w-full max-w-xs my-2">
               <div className="label">
                 <span className="label-text">Password</span>
               </div>
               <input
                 type="password"
-                required
                 value={password}
-                placeholder="Password"
                 className="input input-bordered w-full max-w-xs"
-                minLength={8}
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
-                title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Minimum 8 characters"
               />
             </label>
           </div>
-          <p className="text-red-500">{error}</p>
+
+          <p className="text-red-500 break-words">{error}</p>
+
           <div className="card-actions justify-center m-2">
             <button
               className="btn btn-primary"
@@ -126,11 +155,9 @@ const Login = () => {
 
           <p
             className="m-auto cursor-pointer py-2"
-            onClick={() => setIsLoginForm((value) => !value)}
+            onClick={() => setIsLoginForm((v) => !v)}
           >
-            {isLoginForm
-              ? "New User? Signup Here"
-              : "Existing User? Login Here"}
+            {isLoginForm ? "New User? Signup Here" : "Existing User? Login Here"}
           </p>
         </div>
       </div>
