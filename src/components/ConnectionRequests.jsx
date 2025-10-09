@@ -1,23 +1,28 @@
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL } from "../utls/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests, removeRequest } from "../utils/requestSlice";
+import { addRequests, removeRequest } from "../utls/requestslice";
 import { useEffect, useState } from "react";
 
-const Requests = () => {
+const ConnectionRequests = () => {
   const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
 
   const reviewRequest = async (status, _id) => {
-    try {
-      const res = axios.post(
-        BASE_URL + "/request/review/" + status + "/" + _id,
-        {},
-        { withCredentials: true }
-      );
-      dispatch(removeRequest(_id));
-    } catch (err) {}
-  };
+  try {
+    const res = await axios.post(
+      BASE_URL + "/request/review/" + status + "/" + _id,
+      {},
+      { withCredentials: true }
+    );
+    console.log(res.data.message);
+    dispatch(removeRequest(_id));
+  } catch (err) {
+    console.error("Error reviewing request:", err.response?.data || err.message);
+  }
+};
+
+
 
   const fetchRequests = async () => {
     try {
@@ -43,8 +48,9 @@ const Requests = () => {
       <h1 className="text-bold text-white text-3xl">Connection Requests</h1>
 
       {requests.map((request) => {
-        const { _id, Name, LastName, PhotoUrl, Age, Gender, About } =
-          request.fromUserId;
+        if (!request.fromUserId) return null;
+           const { _id, Name, LastName, PhotoUrl, Age, Gender, About } = request.fromUserId;
+
 
         return (
           <div
@@ -85,4 +91,4 @@ const Requests = () => {
     </div>
   );
 };
-export default Requests;
+export default ConnectionRequests;
