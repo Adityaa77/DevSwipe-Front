@@ -1,1 +1,2 @@
-Front-End Code dor the Dev Swipe Website
+Front-End Code for the Dev Swipe Website
+
