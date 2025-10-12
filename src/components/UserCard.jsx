@@ -16,21 +16,14 @@ const UserCard = ({ user }) => {
       );
       dispatch(removeUserFromFeed(userId));
     } catch (err) {
-       dispatch(removeUserFromFeed(userId));
+      dispatch(removeUserFromFeed(userId));
     }
   };
 
   return (
     <div className="card bg-base-300 w-96 shadow-xl">
       <figure>
-        <img
-  src={user.PhotoUrl || "https://via.placeholder.com/300x300?text=No+Image"}
-  alt={`${user.Name} ${user.LastName}`}
-  className="object-cover w-full h-60 rounded-t-lg"
-  onError={(e) => {
-    e.currentTarget.src = "https://via.placeholder.com/300x300?text=Image+Not+Found";
-  }}
-/>
+        <img src={PhotoUrl} alt="photo" />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{Name + " " + LastName}</h2>
@@ -54,4 +47,5 @@ const UserCard = ({ user }) => {
     </div>
   );
 };
+
 export default UserCard;
