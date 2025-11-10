@@ -65,6 +65,7 @@ const ConnectionRequests = () => {
               <h2 className="font-bold text-xl">{Name + " " + LastName}</h2>
               {Age && Gender && <p>{Age + ", " + Gender}</p>}
               <p>{About}</p>
+              
             </div>
             <div>
               <button

@@ -14,7 +14,7 @@ const Connections = () => {
             const res = await axios.get(BASE_URL + "/user/connections", {
                 withCredentials: true,
             });
-            console.log("Fetched connections from API:", res.data.data); // ✅ added here
+            console.log("Fetched connections from API:", res.data.data); 
             dispatch(addConnections(res.data.data));
         } catch (err) {
 
@@ -25,7 +25,7 @@ const Connections = () => {
         fetchconnections();
     }, [])
 
-    console.log("Connections from Redux:", connections); // ✅ added here
+    console.log("Connections from Redux:", connections); 
 
     if (!connections) return;
     if (connections.length === 0) return <h1>No Connections Found</h1>
@@ -34,7 +34,7 @@ const Connections = () => {
         <div className='text center my-10'>
             <h1 className='text-bold text-2xl'>Connections</h1>
             {connections.map((connection) => {
-                console.log("Each connection object:", connection); // ✅ added here
+                console.log("Each connection object:", connection); 
                 const { _id, Name, LastName, PhotoUrl, Age, Gender, About } =
                     connection;
 
@@ -56,7 +56,11 @@ const Connections = () => {
                             </h2>
                             {Age && Gender && <p>{Age + ", " + Gender}</p>}
                             <p>{About}</p>
+                           
                         </div>
+                         <Link to={"/chat/"+_id}>
+                         <button className="btn btn-primary">Chat</button>
+                         </Link>
                     </div>
                 );
             })}

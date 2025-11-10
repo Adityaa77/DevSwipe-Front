@@ -9,6 +9,7 @@ import appStore from './utls/reduxstore';
 import Feed from "./components/Feed";
 import Connections from './components/Connections';
 import ConnectionRequests from "./components/ConnectionRequests";
+import Chat from './components/Chat';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -24,7 +25,7 @@ function App() {
         <Route path='/profile' element={<Profile/>}/>
         <Route path="/requests" element={<ConnectionRequests/>}/>
         <Route path='/connections' element={<Connections/>}/>
-
+        <Route path='/chat/:targetUserId' element={<Chat/>}/>
     </Route>  
     </Routes>
     </BrowserRouter>
